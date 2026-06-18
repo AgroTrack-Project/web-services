@@ -1,4 +1,4 @@
-package org.example.agrotrack.support.infrastructure.persistence.jpa.entities;
+package org.example.agrotrack.support.infrastructure.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +18,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Entity
 @Table(name = "support_tickets")
-public class SupportTicketEntity extends AuditableAbstractPersistenceEntity {
+public class SupportTicketPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
     @Column(name = "user_id", nullable = false, length = 36)
     private String userId;

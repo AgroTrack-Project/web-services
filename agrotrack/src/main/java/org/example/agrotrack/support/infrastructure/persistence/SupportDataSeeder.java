@@ -2,8 +2,8 @@ package org.example.agrotrack.support.infrastructure.persistence;
 
 import lombok.RequiredArgsConstructor;
 import org.example.agrotrack.support.domain.model.TicketStatus;
-import org.example.agrotrack.support.infrastructure.persistence.jpa.entities.SupportTicketEntity;
-import org.example.agrotrack.support.infrastructure.persistence.jpa.repositories.JpaSupportTicketRepository;
+import org.example.agrotrack.support.infrastructure.entities.SupportTicketPersistenceEntity;
+import org.example.agrotrack.support.infrastructure.repositories.SupportTicketPersistenceRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -18,7 +18,7 @@ public class SupportDataSeeder implements ApplicationRunner {
 
     private static final String DEMO_USER_ID = "1";
 
-    private final JpaSupportTicketRepository repository;
+    private final SupportTicketPersistenceRepository repository;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -44,8 +44,8 @@ public class SupportDataSeeder implements ApplicationRunner {
         ));
     }
 
-    private SupportTicketEntity openTicket(String subject, String message, String userId) {
-        SupportTicketEntity entity = new SupportTicketEntity();
+    private SupportTicketPersistenceEntity openTicket(String subject, String message, String userId) {
+        SupportTicketPersistenceEntity entity = new SupportTicketPersistenceEntity();
         entity.setUserId(userId);
         entity.setSubject(subject);
         entity.setMessage(message);
@@ -55,20 +55,20 @@ public class SupportDataSeeder implements ApplicationRunner {
         return entity;
     }
 
-    private SupportTicketEntity inProgressTicket(String subject, String message, String userId) {
-        SupportTicketEntity entity = openTicket(subject, message, userId);
+    private SupportTicketPersistenceEntity inProgressTicket(String subject, String message, String userId) {
+        SupportTicketPersistenceEntity entity = openTicket(subject, message, userId);
         entity.setStatus(TicketStatus.IN_PROGRESS);
         entity.setCreatedAt(Instant.now().minusSeconds(14_400));
         return entity;
     }
 
-    private SupportTicketEntity closedTicket(
+    private SupportTicketPersistenceEntity closedTicket(
             String subject,
             String message,
             String userId,
             Instant respondedAt
     ) {
-        SupportTicketEntity entity = openTicket(subject, message, userId);
+        SupportTicketPersistenceEntity entity = openTicket(subject, message, userId);
         entity.setStatus(TicketStatus.CLOSED);
         entity.setCreatedAt(respondedAt.minusSeconds(172_800));
         entity.setRespondedAt(respondedAt);
