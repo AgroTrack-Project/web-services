@@ -1,5 +1,9 @@
 package org.example.agrotrack.support.domain.model;
 
+import org.example.agrotrack.support.domain.model.aggregates.SupportTicket;
+import org.example.agrotrack.support.domain.model.valueobjects.TicketMessage;
+import org.example.agrotrack.support.domain.model.valueobjects.TicketSubject;
+import org.example.agrotrack.support.domain.model.valueobjects.UserId;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -12,7 +16,12 @@ class SupportTicketTest {
 
     @Test
     void openTicketStartsAsOpenWithoutRespondedAt() {
-        SupportTicket ticket = SupportTicket.open("user-1", "Subject", "Message", Instant.parse("2026-01-01T00:00:00Z"));
+        SupportTicket ticket = SupportTicket.open(
+                new UserId("user-1"),
+                new TicketSubject("Subject"),
+                new TicketMessage("Message"),
+                Instant.parse("2026-01-01T00:00:00Z")
+        );
 
         assertEquals(TicketStatus.OPEN, ticket.getStatus());
         assertTrue(ticket.canBeClosed());
@@ -21,7 +30,12 @@ class SupportTicketTest {
 
     @Test
     void closeSetsStatusAndRespondedAt() {
-        SupportTicket ticket = SupportTicket.open("user-1", "Subject", "Message", Instant.parse("2026-01-01T00:00:00Z"));
+        SupportTicket ticket = SupportTicket.open(
+                new UserId("user-1"),
+                new TicketSubject("Subject"),
+                new TicketMessage("Message"),
+                Instant.parse("2026-01-01T00:00:00Z")
+        );
         Instant respondedAt = Instant.parse("2026-01-02T00:00:00Z");
 
         ticket.close(respondedAt);
@@ -34,9 +48,9 @@ class SupportTicketTest {
     void closeThrowsWhenAlreadyClosed() {
         SupportTicket ticket = SupportTicket.restore(
                 "ticket-1",
-                "user-1",
-                "Subject",
-                "Message",
+                new UserId("user-1"),
+                new TicketSubject("Subject"),
+                new TicketMessage("Message"),
                 TicketStatus.CLOSED,
                 Instant.parse("2026-01-01T00:00:00Z"),
                 Instant.parse("2026-01-02T00:00:00Z")
