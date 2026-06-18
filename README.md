@@ -24,7 +24,7 @@ Backend REST API del proyecto AgroTrack, desarrollado con Spring Boot. Provee lo
 Una vez corriendo, abrir en el navegador:
 
 ```
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/api/v1/swagger-ui/index.html
 ```
 
 Ahí puedes ver y probar todos los endpoints disponibles.
