@@ -1,6 +1,12 @@
-package org.example.agrotrack.support.domain.model;
+package org.example.agrotrack.support.domain.model.aggregates;
 
 import org.example.agrotrack.shared.aggregates.AbstractDomainAggregateRoot;
+import org.example.agrotrack.support.domain.model.TicketStatus;
+import org.example.agrotrack.support.domain.model.events.SupportTicketClosedEvent;
+import org.example.agrotrack.support.domain.model.events.SupportTicketCreatedEvent;
+import org.example.agrotrack.support.domain.model.valueobjects.TicketMessage;
+import org.example.agrotrack.support.domain.model.valueobjects.TicketSubject;
+import org.example.agrotrack.support.domain.model.valueobjects.UserId;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -8,18 +14,18 @@ import java.util.Objects;
 public class SupportTicket extends AbstractDomainAggregateRoot<SupportTicket> {
 
     private final String id;
-    private final String userId;
-    private final String subject;
-    private final String message;
+    private final UserId userId;
+    private final TicketSubject subject;
+    private final TicketMessage message;
     private TicketStatus status;
     private final Instant createdAt;
     private Instant respondedAt;
 
     private SupportTicket(
             String id,
-            String userId,
-            String subject,
-            String message,
+            UserId userId,
+            TicketSubject subject,
+            TicketMessage message,
             TicketStatus status,
             Instant createdAt,
             Instant respondedAt
@@ -33,15 +39,15 @@ public class SupportTicket extends AbstractDomainAggregateRoot<SupportTicket> {
         this.respondedAt = respondedAt;
     }
 
-    public static SupportTicket open(String userId, String subject, String message, Instant createdAt) {
+    public static SupportTicket open(UserId userId, TicketSubject subject, TicketMessage message, Instant createdAt) {
         return new SupportTicket(null, userId, subject, message, TicketStatus.OPEN, createdAt, null);
     }
 
     public static SupportTicket restore(
             String id,
-            String userId,
-            String subject,
-            String message,
+            UserId userId,
+            TicketSubject subject,
+            TicketMessage message,
             TicketStatus status,
             Instant createdAt,
             Instant respondedAt
@@ -59,25 +65,34 @@ public class SupportTicket extends AbstractDomainAggregateRoot<SupportTicket> {
 
     public void close(Instant respondedAt) {
         if (isClosed()) {
-            throw new IllegalStateException("Support ticket is already closed");
+            throw new IllegalStateException("support.ticket.error.already-closed");
         }
         this.status = TicketStatus.CLOSED;
         this.respondedAt = Objects.requireNonNull(respondedAt, "respondedAt must not be null");
+        onClosed();
+    }
+
+    public void onCreated() {
+        registerDomainEvent(SupportTicketCreatedEvent.from(this));
+    }
+
+    public void onClosed() {
+        registerDomainEvent(SupportTicketClosedEvent.from(this));
     }
 
     public String getId() {
         return id;
     }
 
-    public String getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public String getSubject() {
+    public TicketSubject getSubject() {
         return subject;
     }
 
-    public String getMessage() {
+    public TicketMessage getMessage() {
         return message;
     }
 
