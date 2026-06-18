@@ -24,8 +24,12 @@ public class OpenApiConfiguration {
     @Value("${documentation.application.version:1.0.0}")
     String applicationVersion;
 
+    @Value("${server.servlet.context-path:}")
+    String contextPath;
+
     @Bean
     public OpenAPI openAPI() {
+        final String localServerUrl = "http://localhost:8080%s".formatted(normalizeContextPath(contextPath));
         return new OpenAPI()
                 .info(new Info()
                         .title(applicationName)
@@ -43,11 +47,18 @@ public class OpenApiConfiguration {
                         .url("https://andessmart.pe/docs"))
                 .servers(List.of(
                         new Server()
-                                .url("http://localhost:8080")
+                                .url(localServerUrl)
                                 .description("Local Development Environment"),
                         new Server()
                                 .url("https://api.agrotrack.andessmart.pe")
                                 .description("Production Environment")
                 ));
+    }
+
+    private static String normalizeContextPath(String path) {
+        if (path == null || path.isBlank() || "/".equals(path)) {
+            return "";
+        }
+        return path.startsWith("/") ? path : "/%s".formatted(path);
     }
 }
