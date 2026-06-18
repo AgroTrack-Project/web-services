@@ -30,26 +30,3 @@ http://localhost:8080/api/v1/swagger-ui/index.html
 Ahí puedes ver y probar todos los endpoints disponibles.
 
 ---
-
-## Estructura del proyecto
-
-```
-org.example.agrotrack
-├── shared/                        → Clases compartidas (NO modificar)
-│   ├── aggregates/                → Base para aggregate roots de dominio
-│   ├── result/                    → ApplicationError y Result<T,E>
-│   ├── infrastructure/
-│   │   ├── persistence/           → Base para entidades JPA (UUID id)
-│   │   ├── documentation/         → Configuración de Swagger/OpenAPI
-│   │   └── i18n/                  → Soporte de idiomas (EN/ES)
-│   └── interfaces/
-│       ├── resources/             → ErrorResource, MessageResource
-│       └── transform/             → ErrorResponseAssembler, ResponseEntityAssembler
-│
-├── identity/                      → BC: Usuarios, planes, autenticación
-├── farming/                       → BC: Parcelas y cultivos
-├── soilmonitoring/                → BC: Registros de suelo y riego
-├── alerts/                        → BC: Alertas climáticas
-├── dashboard/                     → BC: Dashboard pro | empresarial
-└── support/                       → BC: Tickets de soporte
-```
