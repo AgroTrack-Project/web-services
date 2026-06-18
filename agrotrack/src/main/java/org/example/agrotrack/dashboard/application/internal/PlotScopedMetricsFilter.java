@@ -1,4 +1,4 @@
-package org.example.agrotrack.dashboard.application.queries;
+package org.example.agrotrack.dashboard.application.internal;
 
 import lombok.RequiredArgsConstructor;
 import org.example.agrotrack.dashboard.application.ports.PlotOwnershipQueryPort;
