@@ -2,9 +2,10 @@ package org.example.agrotrack.dashboard.interfaces.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.example.agrotrack.shared.interfaces.transform.ResponseEntityAssembler;
-import org.example.agrotrack.dashboard.application.queries.GetYieldSummaryByIdQueryService;
-import org.example.agrotrack.dashboard.application.queries.ListYieldSummariesQueryService;
-import org.example.agrotrack.dashboard.interfaces.transform.YieldSummaryResourceAssembler;
+import org.example.agrotrack.dashboard.application.queryservices.YieldSummaryQueryService;
+import org.example.agrotrack.dashboard.domain.model.queries.GetYieldSummaryByIdQuery;
+import org.example.agrotrack.dashboard.interfaces.rest.transform.ListYieldSummariesQueryFromRequestAssembler;
+import org.example.agrotrack.dashboard.interfaces.rest.transform.YieldSummaryResourceAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,15 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class YieldSummariesController {
 
-    private final ListYieldSummariesQueryService listYieldSummariesQueryService;
-    private final GetYieldSummaryByIdQueryService getYieldSummaryByIdQueryService;
-    private final YieldSummaryResourceAssembler resourceAssembler;
+    private final YieldSummaryQueryService yieldSummaryQueryService;
 
     @GetMapping
     public ResponseEntity<?> list(@RequestParam(name = "user_id", required = false) String userId) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
-                listYieldSummariesQueryService.findAll(userId),
-                summaries -> summaries.stream().map(resourceAssembler::toResource).toList(),
+                yieldSummaryQueryService.handle(
+                        ListYieldSummariesQueryFromRequestAssembler.toQueryFromRequest(userId)
+                ),
+                summaries -> summaries.stream().map(YieldSummaryResourceAssembler::toResource).toList(),
                 HttpStatus.OK
         );
     }
@@ -34,8 +35,8 @@ public class YieldSummariesController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable String id) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
-                getYieldSummaryByIdQueryService.findById(id),
-                resourceAssembler::toResource,
+                yieldSummaryQueryService.handle(new GetYieldSummaryByIdQuery(id)),
+                YieldSummaryResourceAssembler::toResource,
                 HttpStatus.OK
         );
     }

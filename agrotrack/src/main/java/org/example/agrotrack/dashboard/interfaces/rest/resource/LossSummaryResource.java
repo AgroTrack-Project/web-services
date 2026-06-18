@@ -1,4 +1,4 @@
-package org.example.agrotrack.dashboard.interfaces.resources;
+package org.example.agrotrack.dashboard.interfaces.rest.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
