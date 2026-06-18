@@ -2,13 +2,15 @@ package org.example.agrotrack.support.interfaces.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.example.agrotrack.shared.interfaces.transform.ResponseEntityAssembler;
-import org.example.agrotrack.support.application.commands.CloseSupportTicketCommandService;
-import org.example.agrotrack.support.application.commands.CreateSupportTicketCommandService;
-import org.example.agrotrack.support.application.queries.GetSupportTicketByIdQueryService;
-import org.example.agrotrack.support.application.queries.ListSupportTicketsQueryService;
-import org.example.agrotrack.support.interfaces.resources.CloseSupportTicketResource;
-import org.example.agrotrack.support.interfaces.resources.CreateSupportTicketResource;
-import org.example.agrotrack.support.interfaces.transform.SupportTicketResourceAssembler;
+import org.example.agrotrack.support.application.commandservices.SupportTicketCommandService;
+import org.example.agrotrack.support.application.queryservices.SupportTicketQueryService;
+import org.example.agrotrack.support.domain.model.queries.GetSupportTicketByIdQuery;
+import org.example.agrotrack.support.interfaces.rest.resource.CloseSupportTicketResource;
+import org.example.agrotrack.support.interfaces.rest.resource.CreateSupportTicketResource;
+import org.example.agrotrack.support.interfaces.rest.transform.CloseSupportTicketCommandFromResourceAssembler;
+import org.example.agrotrack.support.interfaces.rest.transform.CreateSupportTicketCommandFromResourceAssembler;
+import org.example.agrotrack.support.interfaces.rest.transform.ListSupportTicketsQueryFromRequestAssembler;
+import org.example.agrotrack.support.interfaces.rest.transform.SupportTicketResourceAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,17 +27,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SupportTicketsController {
 
-    private final ListSupportTicketsQueryService listSupportTicketsQueryService;
-    private final GetSupportTicketByIdQueryService getSupportTicketByIdQueryService;
-    private final CreateSupportTicketCommandService createSupportTicketCommandService;
-    private final CloseSupportTicketCommandService closeSupportTicketCommandService;
-    private final SupportTicketResourceAssembler resourceAssembler;
+    private final SupportTicketQueryService supportTicketQueryService;
+    private final SupportTicketCommandService supportTicketCommandService;
 
     @GetMapping
     public ResponseEntity<?> list(@RequestParam(name = "user_id", required = false) String userId) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
-                listSupportTicketsQueryService.findAll(userId),
-                tickets -> tickets.stream().map(resourceAssembler::toResource).toList(),
+                supportTicketQueryService.handle(
+                        ListSupportTicketsQueryFromRequestAssembler.toQueryFromRequest(userId)
+                ),
+                tickets -> tickets.stream().map(SupportTicketResourceAssembler::toResource).toList(),
                 HttpStatus.OK
         );
     }
@@ -43,8 +44,8 @@ public class SupportTicketsController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable String id) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
-                getSupportTicketByIdQueryService.findById(id),
-                resourceAssembler::toResource,
+                supportTicketQueryService.handle(new GetSupportTicketByIdQuery(id)),
+                SupportTicketResourceAssembler::toResource,
                 HttpStatus.OK
         );
     }
@@ -52,8 +53,10 @@ public class SupportTicketsController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody CreateSupportTicketResource request) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
-                createSupportTicketCommandService.create(request.userId(), request.subject(), request.message()),
-                resourceAssembler::toResource,
+                supportTicketCommandService.handle(
+                        CreateSupportTicketCommandFromResourceAssembler.toCommandFromResource(request)
+                ),
+                SupportTicketResourceAssembler::toResource,
                 HttpStatus.CREATED
         );
     }
@@ -63,10 +66,11 @@ public class SupportTicketsController {
             @PathVariable String id,
             @RequestBody(required = false) CloseSupportTicketResource request
     ) {
-        String requestedStatus = request != null ? request.status() : null;
         return ResponseEntityAssembler.toResponseEntityFromResult(
-                closeSupportTicketCommandService.closeIfRequested(id, requestedStatus),
-                resourceAssembler::toResource,
+                supportTicketCommandService.handle(
+                        CloseSupportTicketCommandFromResourceAssembler.toCommandFromResource(id, request)
+                ),
+                SupportTicketResourceAssembler::toResource,
                 HttpStatus.OK
         );
     }
