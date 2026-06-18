@@ -1,12 +1,12 @@
 package org.example.agrotrack.dashboard.infrastructure.persistence;
 
 import lombok.RequiredArgsConstructor;
-import org.example.agrotrack.dashboard.infrastructure.persistence.jpa.entities.LossSummaryEntity;
-import org.example.agrotrack.dashboard.infrastructure.persistence.jpa.entities.WaterConsumptionEntity;
-import org.example.agrotrack.dashboard.infrastructure.persistence.jpa.entities.YieldSummaryEntity;
-import org.example.agrotrack.dashboard.infrastructure.persistence.jpa.repositories.JpaLossSummaryRepository;
-import org.example.agrotrack.dashboard.infrastructure.persistence.jpa.repositories.JpaWaterConsumptionRepository;
-import org.example.agrotrack.dashboard.infrastructure.persistence.jpa.repositories.JpaYieldSummaryRepository;
+import org.example.agrotrack.dashboard.infrastructure.entities.LossSummaryPersistenceEntity;
+import org.example.agrotrack.dashboard.infrastructure.entities.WaterConsumptionPersistenceEntity;
+import org.example.agrotrack.dashboard.infrastructure.entities.YieldSummaryPersistenceEntity;
+import org.example.agrotrack.dashboard.infrastructure.repositories.LossSummaryPersistenceRepository;
+import org.example.agrotrack.dashboard.infrastructure.repositories.WaterConsumptionPersistenceRepository;
+import org.example.agrotrack.dashboard.infrastructure.repositories.YieldSummaryPersistenceRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -25,9 +25,9 @@ public class DashboardDataSeeder implements ApplicationRunner {
 
     private static final String SEASON = "2025-2026";
 
-    private final JpaYieldSummaryRepository yieldSummaryRepository;
-    private final JpaLossSummaryRepository lossSummaryRepository;
-    private final JpaWaterConsumptionRepository waterConsumptionRepository;
+    private final YieldSummaryPersistenceRepository yieldSummaryRepository;
+    private final LossSummaryPersistenceRepository lossSummaryRepository;
+    private final WaterConsumptionPersistenceRepository waterConsumptionRepository;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -63,8 +63,8 @@ public class DashboardDataSeeder implements ApplicationRunner {
         waterConsumptionRepository.save(water("4", 11_600));
     }
 
-    private YieldSummaryEntity seedYield(String plotId, double yieldPerHectare) {
-        YieldSummaryEntity entity = new YieldSummaryEntity();
+    private YieldSummaryPersistenceEntity seedYield(String plotId, double yieldPerHectare) {
+        YieldSummaryPersistenceEntity entity = new YieldSummaryPersistenceEntity();
         entity.setPlotId(plotId);
         entity.setYieldPerHectare(yieldPerHectare);
         entity.setSeason(SEASON);
@@ -72,8 +72,8 @@ public class DashboardDataSeeder implements ApplicationRunner {
         return entity;
     }
 
-    private LossSummaryEntity loss(String plotId, double lossPercentage, String cause) {
-        LossSummaryEntity entity = new LossSummaryEntity();
+    private LossSummaryPersistenceEntity loss(String plotId, double lossPercentage, String cause) {
+        LossSummaryPersistenceEntity entity = new LossSummaryPersistenceEntity();
         entity.setPlotId(plotId);
         entity.setLossPercentage(lossPercentage);
         entity.setCause(cause);
@@ -82,8 +82,8 @@ public class DashboardDataSeeder implements ApplicationRunner {
         return entity;
     }
 
-    private WaterConsumptionEntity water(String plotId, double totalLiters) {
-        WaterConsumptionEntity entity = new WaterConsumptionEntity();
+    private WaterConsumptionPersistenceEntity water(String plotId, double totalLiters) {
+        WaterConsumptionPersistenceEntity entity = new WaterConsumptionPersistenceEntity();
         entity.setPlotId(plotId);
         entity.setTotalLiters(totalLiters);
         entity.setSeason(SEASON);

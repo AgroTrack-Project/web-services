@@ -1,4 +1,4 @@
-package org.example.agrotrack.dashboard.infrastructure.persistence.jpa.entities;
+package org.example.agrotrack.dashboard.infrastructure.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +15,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Entity
 @Table(name = "yield_summaries")
-public class YieldSummaryEntity extends AuditableAbstractPersistenceEntity {
+public class YieldSummaryPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
     @Column(name = "plot_id", nullable = false, length = 36)
     private String plotId;
