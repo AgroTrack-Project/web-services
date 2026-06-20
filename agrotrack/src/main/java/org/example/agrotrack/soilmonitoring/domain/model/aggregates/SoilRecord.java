@@ -1,7 +1,7 @@
 package org.example.agrotrack.soilmonitoring.domain.model.aggregates;
 
 import org.example.agrotrack.shared.aggregates.AbstractDomainAggregateRoot;
-import org.example.agrotrack.soilmonitoring.domain.model.SoilStatus;
+import org.example.agrotrack.soilmonitoring.domain.model.valueobjects.SoilStatus;
 import org.example.agrotrack.soilmonitoring.domain.model.valueobjects.Humidity;
 import org.example.agrotrack.soilmonitoring.domain.model.valueobjects.PlotId;
 import org.example.agrotrack.soilmonitoring.domain.model.valueobjects.Temperature;

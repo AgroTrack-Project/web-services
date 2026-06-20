@@ -1,7 +1,7 @@
 package org.example.agrotrack.soilmonitoring.infrastructure.assemblers;
 
-import org.example.agrotrack.soilmonitoring.domain.model.IrrigationRecommendationStatus;
-import org.example.agrotrack.soilmonitoring.domain.model.IrrigationUrgency;
+import org.example.agrotrack.soilmonitoring.domain.model.valueobjects.IrrigationRecommendationStatus;
+import org.example.agrotrack.soilmonitoring.domain.model.valueobjects.IrrigationUrgency;
 import org.example.agrotrack.soilmonitoring.domain.model.aggregates.IrrigationRecommendation;
 import org.example.agrotrack.soilmonitoring.domain.model.valueobjects.PlotId;
 import org.example.agrotrack.soilmonitoring.domain.model.valueobjects.SoilRecordId;
