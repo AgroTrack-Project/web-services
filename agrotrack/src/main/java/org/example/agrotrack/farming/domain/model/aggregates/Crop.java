@@ -8,16 +8,16 @@ import java.util.Objects;
 
 public class Crop extends AbstractDomainAggregateRoot<Crop> {
 
-    private final Long id;
-    private final Long plotId;
+    private final String id;
+    private final String plotId;
     private String type;
     private LocalDate sowingDate;
     private LocalDate harvestDate;
     private CropStatus status;
 
     private Crop(
-            Long id,
-            Long plotId,
+            String id,
+            String plotId,
             String type,
             LocalDate sowingDate,
             LocalDate harvestDate,
@@ -31,13 +31,13 @@ public class Crop extends AbstractDomainAggregateRoot<Crop> {
         this.status = Objects.requireNonNull(status, "status must not be null");
     }
 
-    public static Crop create(Long plotId, String type, LocalDate sowingDate, LocalDate harvestDate) {
+    public static Crop create(String plotId, String type, LocalDate sowingDate, LocalDate harvestDate) {
         return new Crop(null, plotId, type, sowingDate, harvestDate, CropStatus.ACTIVE);
     }
 
     public static Crop restore(
-            Long id,
-            Long plotId,
+            String id,
+            String plotId,
             String type,
             LocalDate sowingDate,
             LocalDate harvestDate,
@@ -52,16 +52,11 @@ public class Crop extends AbstractDomainAggregateRoot<Crop> {
         this.harvestDate = harvestDate;
     }
 
-    public void markAsHarvested(LocalDate harvestDate) {
-        this.harvestDate = harvestDate;
-        this.status = CropStatus.HARVESTED;
-    }
-
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public Long getPlotId() {
+    public String getPlotId() {
         return plotId;
     }
 

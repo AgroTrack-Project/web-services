@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class Plot extends AbstractDomainAggregateRoot<Plot> {
 
-    private final Long id;
+    private final String id;
     private final String userId;
     private String name;
     private String location;
@@ -17,7 +17,7 @@ public class Plot extends AbstractDomainAggregateRoot<Plot> {
     private final LocalDateTime createdAt;
 
     private Plot(
-            Long id,
+            String id,
             String userId,
             String name,
             String location,
@@ -39,7 +39,7 @@ public class Plot extends AbstractDomainAggregateRoot<Plot> {
     }
 
     public static Plot restore(
-            Long id,
+            String id,
             String userId,
             String name,
             String location,
@@ -56,11 +56,7 @@ public class Plot extends AbstractDomainAggregateRoot<Plot> {
         this.sizeHectares = Objects.requireNonNull(sizeHectares, "sizeHectares must not be null");
     }
 
-    public void deactivate() {
-        this.status = PlotStatus.INACTIVE;
-    }
-
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

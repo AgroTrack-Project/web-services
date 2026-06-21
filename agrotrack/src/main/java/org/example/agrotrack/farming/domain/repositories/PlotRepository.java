@@ -7,11 +7,13 @@ import java.util.Optional;
 
 public interface PlotRepository {
 
-    Optional<Plot> findById(Long id);
+    Optional<Plot> findById(String id);
 
     List<Plot> findAll();
 
     List<Plot> findByUserId(String userId);
 
     Plot save(Plot plot);
+
+    void deleteById(String id);
 }

@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface CropRepository {
 
-    Optional<Crop> findById(Long id);
+    Optional<Crop> findById(String id);
 
     List<Crop> findAll();
 
-    List<Crop> findByPlotId(Long plotId);
+    List<Crop> findByPlotId(String plotId);
 
     Crop save(Crop crop);
 
-    void deleteById(Long id);
+    void deleteById(String id);
 }
