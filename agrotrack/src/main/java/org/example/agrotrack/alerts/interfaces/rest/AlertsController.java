@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST controller responsible for managing weather alert endpoints.
+ */
 @RestController
 @RequestMapping("/alerts")
 @RequiredArgsConstructor
@@ -19,6 +22,12 @@ public class AlertsController {
 
     private final AlertQueryService alertQueryService;
 
+    /**
+     * Retrieves weather alerts for a specific city.
+     *
+     * @param city city name used to search for alerts
+     * @return response containing the list of alerts or an error response
+     */
     @GetMapping
     public ResponseEntity<?> listByCity(@RequestParam String city) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
