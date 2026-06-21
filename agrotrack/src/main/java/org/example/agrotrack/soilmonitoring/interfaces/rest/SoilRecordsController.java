@@ -6,7 +6,6 @@ import org.example.agrotrack.shared.interfaces.transform.ResponseEntityAssembler
 import org.example.agrotrack.soilmonitoring.application.commandservices.SoilRecordCommandService;
 import org.example.agrotrack.soilmonitoring.application.queryservices.SoilRecordQueryService;
 import org.example.agrotrack.soilmonitoring.domain.model.commands.DeleteSoilRecordCommand;
-import org.example.agrotrack.soilmonitoring.domain.model.queries.GetSoilRecordByIdQuery;
 import org.example.agrotrack.soilmonitoring.interfaces.rest.resource.CreateSoilRecordResource;
 import org.example.agrotrack.soilmonitoring.interfaces.rest.transform.CreateSoilRecordCommandFromResourceAssembler;
 import org.example.agrotrack.soilmonitoring.interfaces.rest.transform.ListSoilRecordsQueryFromRequestAssembler;
@@ -39,15 +38,6 @@ public class SoilRecordsController {
                 soilRecords -> soilRecords.stream()
                         .map(SoilRecordResourceAssembler::toResource)
                         .toList(),
-                HttpStatus.OK
-        );
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable String id) {
-        return ResponseEntityAssembler.toResponseEntityFromResult(
-                soilRecordQueryService.handle(new GetSoilRecordByIdQuery(id)),
-                SoilRecordResourceAssembler::toResource,
                 HttpStatus.OK
         );
     }

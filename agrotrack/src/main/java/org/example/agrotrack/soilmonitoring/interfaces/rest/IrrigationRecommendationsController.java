@@ -6,7 +6,6 @@ import org.example.agrotrack.shared.interfaces.transform.ResponseEntityAssembler
 import org.example.agrotrack.soilmonitoring.application.commandservices.IrrigationRecommendationCommandService;
 import org.example.agrotrack.soilmonitoring.application.queryservices.IrrigationRecommendationQueryService;
 import org.example.agrotrack.soilmonitoring.domain.model.commands.DeleteIrrigationRecommendationCommand;
-import org.example.agrotrack.soilmonitoring.domain.model.queries.GetIrrigationRecommendationByIdQuery;
 import org.example.agrotrack.soilmonitoring.interfaces.rest.resource.CreateIrrigationRecommendationResource;
 import org.example.agrotrack.soilmonitoring.interfaces.rest.resource.UpdateIrrigationRecommendationResource;
 import org.example.agrotrack.soilmonitoring.interfaces.rest.transform.CreateIrrigationRecommendationCommandFromResourceAssembler;
@@ -42,15 +41,6 @@ public class IrrigationRecommendationsController {
                 recommendations -> recommendations.stream()
                         .map(IrrigationRecommendationResourceAssembler::toResource)
                         .toList(),
-                HttpStatus.OK
-        );
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable String id) {
-        return ResponseEntityAssembler.toResponseEntityFromResult(
-                queryService.handle(new GetIrrigationRecommendationByIdQuery(id)),
-                IrrigationRecommendationResourceAssembler::toResource,
                 HttpStatus.OK
         );
     }
