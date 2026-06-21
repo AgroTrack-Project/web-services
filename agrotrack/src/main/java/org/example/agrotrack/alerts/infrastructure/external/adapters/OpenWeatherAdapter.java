@@ -14,6 +14,10 @@ import org.springframework.web.client.RestClientResponseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter that integrates with the OpenWeather API to retrieve weather data
+ * and generate agricultural alerts based on climate conditions.
+ */
 @Component
 public class OpenWeatherAdapter implements WeatherServicePort {
 
@@ -25,10 +29,20 @@ public class OpenWeatherAdapter implements WeatherServicePort {
     @Value("${openweather.api.key}")
     private String apiKey;
 
+    /**
+     * Creates a new OpenWeather adapter instance.
+     */
     public OpenWeatherAdapter() {
         this.restClient = RestClient.create();
     }
 
+    /**
+     * Retrieves weather information for the specified city and converts it
+     * into a collection of agricultural alerts.
+     *
+     * @param city the city to query
+     * @return a result containing generated alerts or an application error
+     */
     @Override
     public Result<List<Alert>, ApplicationError> fetchAlertsForCity(String city) {
         try {
@@ -40,7 +54,12 @@ public class OpenWeatherAdapter implements WeatherServicePort {
                     .body(OpenWeatherResponse.class);
 
             if (response == null) {
-                return Result.failure(ApplicationError.unexpected("OpenWeather", "Empty response received from weather service"));
+                return Result.failure(
+                        ApplicationError.unexpected(
+                                "OpenWeather",
+                                "Empty response received from weather service"
+                        )
+                );
             }
 
             return Result.success(toAlerts(response));
@@ -55,6 +74,12 @@ public class OpenWeatherAdapter implements WeatherServicePort {
         }
     }
 
+    /**
+     * Converts weather data into domain alerts.
+     *
+     * @param response weather data received from OpenWeather
+     * @return generated alerts
+     */
     private List<Alert> toAlerts(OpenWeatherResponse response) {
         List<Alert> alerts = new ArrayList<>();
 
@@ -62,48 +87,92 @@ public class OpenWeatherAdapter implements WeatherServicePort {
         String description = (response.weather() != null && !response.weather().isEmpty())
                 ? response.weather().get(0).description()
                 : "";
+
         double humidity = response.main().humidity();
         double temp = response.main().temp();
         double tempMin = response.main().tempMin();
 
         if ("High".equals(calculateRainRisk(humidity, description))) {
-            alerts.add(new Alert(cityName, "Heavy Rain Risk",
-                    "Possible heavy rain or storms detected.", AlertUrgency.HIGH));
+            alerts.add(new Alert(
+                    cityName,
+                    "Heavy Rain Risk",
+                    "Possible heavy rain or storms detected.",
+                    AlertUrgency.HIGH
+            ));
         }
 
         if ("High".equals(calculateDroughtRisk(humidity, temp))) {
-            alerts.add(new Alert(cityName, "Drought Risk",
-                    "Low humidity and high temperatures detected.", AlertUrgency.HIGH));
+            alerts.add(new Alert(
+                    cityName,
+                    "Drought Risk",
+                    "Low humidity and high temperatures detected.",
+                    AlertUrgency.HIGH
+            ));
         }
 
         switch (calculateHeatRisk(temp, tempMin)) {
-            case "High" -> alerts.add(new Alert(cityName, "Extreme Heat",
-                    "Very high temperatures detected.", AlertUrgency.HIGH));
-            case "Medium" -> alerts.add(new Alert(cityName, "Moderate Heat",
-                    "Warm temperatures detected.", AlertUrgency.MEDIUM));
-            case "Cold Alert" -> alerts.add(new Alert(cityName, "Cold Alert",
-                    "Very low temperatures detected. Protect your crops from frost.", AlertUrgency.HIGH));
+            case "High" -> alerts.add(new Alert(
+                    cityName,
+                    "Extreme Heat",
+                    "Very high temperatures detected.",
+                    AlertUrgency.HIGH
+            ));
+            case "Medium" -> alerts.add(new Alert(
+                    cityName,
+                    "Moderate Heat",
+                    "Warm temperatures detected.",
+                    AlertUrgency.MEDIUM
+            ));
+            case "Cold Alert" -> alerts.add(new Alert(
+                    cityName,
+                    "Cold Alert",
+                    "Very low temperatures detected. Protect your crops from frost.",
+                    AlertUrgency.HIGH
+            ));
         }
 
         return alerts;
     }
 
+    /**
+     * Calculates rain risk based on humidity and weather conditions.
+     *
+     * @param humidity current humidity percentage
+     * @param description weather description
+     * @return risk level
+     */
     private String calculateRainRisk(double humidity, String description) {
         String text = description.toLowerCase();
+
         if (text.contains("rain") || text.contains("storm")
                 || text.contains("drizzle") || text.contains("thunderstorm")) {
             return "High";
         }
+
         if (humidity >= 85) return "Medium";
         return "Low";
     }
 
+    /**
+     * Calculates drought risk based on humidity and temperature.
+     *
+     * @param humidity current humidity percentage
+     * @param temp current temperature
+     * @return risk level
+     */
     private String calculateDroughtRisk(double humidity, double temp) {
         if (humidity <= 30 && temp >= 30) return "High";
         if (humidity <= 50 && temp >= 24) return "Medium";
         return "Low";
     }
 
+    /**
+     * Calculates heat or cold risk based on temperature values.
+     *
+     * @param temp current temperature
+     * @param tempMin minimum recorded temperature
+     * @return risk level
+     */
     private String calculateHeatRisk(double temp, double tempMin) {
         if (tempMin < 5) return "Cold Alert";
         if (temp >= 35) return "High";
