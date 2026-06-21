@@ -20,7 +20,7 @@ public class PlotRepositoryImpl implements PlotRepository {
     }
 
     @Override
-    public Optional<Plot> findById(Long id) {
+    public Optional<Plot> findById(String id) {
         return persistenceRepository.findById(id)
                 .map(PlotPersistenceAssembler::toDomainFromPersistence);
     }
@@ -55,5 +55,10 @@ public class PlotRepositoryImpl implements PlotRepository {
         var saved = persistenceRepository.save(entity);
 
         return PlotPersistenceAssembler.toDomainFromPersistence(saved);
+    }
+
+    @Override
+    public void deleteById(String id) {
+        persistenceRepository.deleteById(id);
     }
 }

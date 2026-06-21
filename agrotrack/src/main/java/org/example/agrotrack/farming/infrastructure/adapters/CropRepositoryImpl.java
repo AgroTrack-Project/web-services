@@ -20,7 +20,7 @@ public class CropRepositoryImpl implements CropRepository {
     }
 
     @Override
-    public Optional<Crop> findById(Long id) {
+    public Optional<Crop> findById(String id) {
         return persistenceRepository.findById(id)
                 .map(CropPersistenceAssembler::toDomainFromPersistence);
     }
@@ -33,7 +33,7 @@ public class CropRepositoryImpl implements CropRepository {
     }
 
     @Override
-    public List<Crop> findByPlotId(Long plotId) {
+    public List<Crop> findByPlotId(String plotId) {
         return persistenceRepository.findByPlotId(plotId).stream()
                 .map(CropPersistenceAssembler::toDomainFromPersistence)
                 .toList();
@@ -58,7 +58,7 @@ public class CropRepositoryImpl implements CropRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         persistenceRepository.deleteById(id);
     }
 }

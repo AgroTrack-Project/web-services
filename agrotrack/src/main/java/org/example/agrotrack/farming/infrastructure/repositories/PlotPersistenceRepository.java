@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PlotPersistenceRepository extends JpaRepository<PlotPersistenceEntity, Long> {
+public interface PlotPersistenceRepository extends JpaRepository<PlotPersistenceEntity, String> {
 
     List<PlotPersistenceEntity> findByUserId(String userId);
 }

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CropPersistenceRepository extends JpaRepository<CropPersistenceEntity, Long> {
+public interface CropPersistenceRepository extends JpaRepository<CropPersistenceEntity, String> {
 
-    List<CropPersistenceEntity> findByPlotId(Long plotId);
+    List<CropPersistenceEntity> findByPlotId(String plotId);
 }
