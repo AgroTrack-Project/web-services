@@ -7,7 +7,7 @@ public final class ListCropsQueryFromRequestAssembler {
     private ListCropsQueryFromRequestAssembler() {
     }
 
-    public static ListCropsQuery toQueryFromRequest(Long plotId) {
+    public static ListCropsQuery toQueryFromRequest(String plotId) {
         return new ListCropsQuery(plotId);
     }
 }

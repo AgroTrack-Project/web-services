@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 
 public record CropResource(
-        Long id,
-        @JsonProperty("plot_id") Long plotId,
+        String id,
+        @JsonProperty("plot_id") String plotId,
         String type,
         @JsonProperty("sowing_date") LocalDate sowingDate,
         @JsonProperty("harvest_date") LocalDate harvestDate,

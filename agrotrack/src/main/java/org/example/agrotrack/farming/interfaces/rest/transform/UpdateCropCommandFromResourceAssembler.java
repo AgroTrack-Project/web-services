@@ -8,7 +8,7 @@ public final class UpdateCropCommandFromResourceAssembler {
     private UpdateCropCommandFromResourceAssembler() {
     }
 
-    public static UpdateCropCommand toCommandFromResource(Long id, UpdateCropResource resource) {
+    public static UpdateCropCommand toCommandFromResource(String id, UpdateCropResource resource) {
         return new UpdateCropCommand(
                 id,
                 resource.type(),

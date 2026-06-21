@@ -8,7 +8,7 @@ public final class UpdatePlotCommandFromResourceAssembler {
     private UpdatePlotCommandFromResourceAssembler() {
     }
 
-    public static UpdatePlotCommand toCommandFromResource(Long id, UpdatePlotResource resource) {
+    public static UpdatePlotCommand toCommandFromResource(String id, UpdatePlotResource resource) {
         return new UpdatePlotCommand(
                 id,
                 resource.name(),
