@@ -1,0 +1,64 @@
+package org.example.agrotrack.farming.infrastructure.adapters;
+
+import org.example.agrotrack.farming.domain.model.aggregates.Crop;
+import org.example.agrotrack.farming.domain.repositories.CropRepository;
+import org.example.agrotrack.farming.infrastructure.assemblers.CropPersistenceAssembler;
+import org.example.agrotrack.farming.infrastructure.entities.CropPersistenceEntity;
+import org.example.agrotrack.farming.infrastructure.repositories.CropPersistenceRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public class CropRepositoryImpl implements CropRepository {
+
+    private final CropPersistenceRepository persistenceRepository;
+
+    public CropRepositoryImpl(CropPersistenceRepository persistenceRepository) {
+        this.persistenceRepository = persistenceRepository;
+    }
+
+    @Override
+    public Optional<Crop> findById(Long id) {
+        return persistenceRepository.findById(id)
+                .map(CropPersistenceAssembler::toDomainFromPersistence);
+    }
+
+    @Override
+    public List<Crop> findAll() {
+        return persistenceRepository.findAll().stream()
+                .map(CropPersistenceAssembler::toDomainFromPersistence)
+                .toList();
+    }
+
+    @Override
+    public List<Crop> findByPlotId(Long plotId) {
+        return persistenceRepository.findByPlotId(plotId).stream()
+                .map(CropPersistenceAssembler::toDomainFromPersistence)
+                .toList();
+    }
+
+    @Override
+    public Crop save(Crop crop) {
+        CropPersistenceEntity entity;
+
+        if (crop.getId() == null) {
+            entity = CropPersistenceAssembler.toPersistenceFromDomain(crop);
+        } else {
+            entity = persistenceRepository.findById(crop.getId())
+                    .orElseGet(CropPersistenceEntity::new);
+
+            CropPersistenceAssembler.copyToPersistenceFromDomain(crop, entity);
+        }
+
+        var saved = persistenceRepository.save(entity);
+
+        return CropPersistenceAssembler.toDomainFromPersistence(saved);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        persistenceRepository.deleteById(id);
+    }
+}
