@@ -3,7 +3,7 @@ package org.example.agrotrack.farming.application.internal.commandservices;
 import org.example.agrotrack.farming.application.commandservices.PlotCommandService;
 import org.example.agrotrack.farming.domain.model.aggregates.Plot;
 import org.example.agrotrack.farming.domain.model.commands.CreatePlotCommand;
-import org.example.agrotrack.farming.domain.model.commands.DeactivatePlotCommand;
+import org.example.agrotrack.farming.domain.model.commands.DeletePlotCommand;
 import org.example.agrotrack.farming.domain.model.commands.UpdatePlotCommand;
 import org.example.agrotrack.farming.domain.repositories.PlotRepository;
 import org.example.agrotrack.shared.result.ApplicationError;
@@ -34,7 +34,7 @@ public class PlotCommandServiceImpl implements PlotCommandService {
         var plotOptional = repository.findById(command.id());
 
         if (plotOptional.isEmpty()) {
-            return Result.failure(ApplicationError.notFound("Plot", String.valueOf(command.id())));
+            return Result.failure(ApplicationError.notFound("Plot", command.id()));
         }
 
         Plot plot = plotOptional.get();
@@ -45,16 +45,15 @@ public class PlotCommandServiceImpl implements PlotCommandService {
 
     @Override
     @Transactional
-    public Result<Plot, ApplicationError> handle(DeactivatePlotCommand command) {
+    public Result<String, ApplicationError> handle(DeletePlotCommand command) {
         var plotOptional = repository.findById(command.id());
 
         if (plotOptional.isEmpty()) {
-            return Result.failure(ApplicationError.notFound("Plot", String.valueOf(command.id())));
+            return Result.failure(ApplicationError.notFound("Plot", command.id()));
         }
 
-        Plot plot = plotOptional.get();
-        plot.deactivate();
+        repository.deleteById(command.id());
 
-        return Result.success(repository.save(plot));
+        return Result.success("Plot deleted successfully");
     }
 }
