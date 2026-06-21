@@ -4,7 +4,6 @@ import org.example.agrotrack.farming.application.commandservices.CropCommandServ
 import org.example.agrotrack.farming.domain.model.aggregates.Crop;
 import org.example.agrotrack.farming.domain.model.commands.CreateCropCommand;
 import org.example.agrotrack.farming.domain.model.commands.DeleteCropCommand;
-import org.example.agrotrack.farming.domain.model.commands.HarvestCropCommand;
 import org.example.agrotrack.farming.domain.model.commands.UpdateCropCommand;
 import org.example.agrotrack.farming.domain.repositories.CropRepository;
 import org.example.agrotrack.farming.domain.repositories.PlotRepository;
@@ -13,12 +12,8 @@ import org.example.agrotrack.shared.result.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-
 @Service
 public class CropCommandServiceImpl implements CropCommandService {
-
-    private static final LocalDate LEGACY_MOCKAPI_EPOCH = LocalDate.of(1970, 1, 1);
 
     private final CropRepository repository;
     private final PlotRepository plotRepository;
@@ -46,7 +41,7 @@ public class CropCommandServiceImpl implements CropCommandService {
         var cropOptional = repository.findById(command.id());
 
         if (cropOptional.isEmpty()) {
-            return Result.failure(ApplicationError.notFound("Crop", String.valueOf(command.id())));
+            return Result.failure(ApplicationError.notFound("Crop", command.id()));
         }
 
         Crop crop = cropOptional.get();
@@ -57,28 +52,11 @@ public class CropCommandServiceImpl implements CropCommandService {
 
     @Override
     @Transactional
-    public Result<Crop, ApplicationError> handle(HarvestCropCommand command) {
-        var cropOptional = repository.findById(command.id());
-
-        if (cropOptional.isEmpty()) {
-            return Result.failure(ApplicationError.notFound("Crop", String.valueOf(command.id())));
-        }
-
-        LocalDate harvestDate = LEGACY_MOCKAPI_EPOCH.equals(command.harvestDate()) ? null : command.harvestDate();
-
-        Crop crop = cropOptional.get();
-        crop.markAsHarvested(harvestDate);
-
-        return Result.success(repository.save(crop));
-    }
-
-    @Override
-    @Transactional
     public Result<String, ApplicationError> handle(DeleteCropCommand command) {
         var cropOptional = repository.findById(command.id());
 
         if (cropOptional.isEmpty()) {
-            return Result.failure(ApplicationError.notFound("Crop", String.valueOf(command.id())));
+            return Result.failure(ApplicationError.notFound("Crop", command.id()));
         }
 
         repository.deleteById(command.id());

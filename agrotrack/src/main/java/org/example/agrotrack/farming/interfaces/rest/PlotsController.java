@@ -4,8 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.agrotrack.farming.application.commandservices.PlotCommandService;
 import org.example.agrotrack.farming.application.queryservices.PlotQueryService;
-import org.example.agrotrack.farming.domain.model.commands.DeactivatePlotCommand;
-import org.example.agrotrack.farming.domain.model.queries.GetPlotByIdQuery;
+import org.example.agrotrack.farming.domain.model.commands.DeletePlotCommand;
 import org.example.agrotrack.farming.interfaces.rest.resource.CreatePlotResource;
 import org.example.agrotrack.farming.interfaces.rest.resource.UpdatePlotResource;
 import org.example.agrotrack.farming.interfaces.rest.transform.CreatePlotCommandFromResourceAssembler;
@@ -44,15 +43,6 @@ public class PlotsController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        return ResponseEntityAssembler.toResponseEntityFromResult(
-                plotQueryService.handle(new GetPlotByIdQuery(id)),
-                PlotResourceAssembler::toResource,
-                HttpStatus.OK
-        );
-    }
-
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CreatePlotResource resource) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
@@ -63,7 +53,7 @@ public class PlotsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody UpdatePlotResource resource) {
+    public ResponseEntity<?> update(@PathVariable String id, @Valid @RequestBody UpdatePlotResource resource) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
                 plotCommandService.handle(UpdatePlotCommandFromResourceAssembler.toCommandFromResource(id, resource)),
                 PlotResourceAssembler::toResource,
@@ -72,10 +62,10 @@ public class PlotsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable String id) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
-                plotCommandService.handle(new DeactivatePlotCommand(id)),
-                plot -> null,
+                plotCommandService.handle(new DeletePlotCommand(id)),
+                message -> null,
                 HttpStatus.NO_CONTENT
         );
     }
