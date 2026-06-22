@@ -10,12 +10,28 @@ Backend REST API del proyecto AgroTrack, desarrollado con Spring Boot. Provee lo
 2. Abrir el proyecto en tu IDE
 3. En `src/main/resources/application.properties`, reemplazar con tus credenciales locales de MySQL:
    ```properties
-   spring.datasource.username=tu_usuario
-   spring.datasource.password=tu_password
+   spring.datasource.username={YOUR_USER}
+   spring.datasource.password={YOUR_PASSWORD}
    ```
-4. Correr `AgrotrackApplication.java`
-5. La base de datos `agrotrack` se crea automáticamente si no existe
-6. Las tablas también se crean automáticamente al iniciar
+4. En el mismo archivo, reemplazar la API key de OpenWeather con la tuya:
+   ```properties
+   openweather.api.key={YOUR_API_KEY}
+   ```
+   Puedes generar tu API key gratis en [https://openweathermap.org/](https://openweathermap.org/) registrándote y yendo a **API keys** en tu perfil.
+5. Correr `AgrotrackApplication.java`
+6. La base de datos `agrotrack` se crea automáticamente si no existe
+7. Las tablas también se crean automáticamente al iniciar
+
+---
+
+## Solución de problemas
+
+### No aparece el botón de ejecutar (triángulo verde)
+
+Si al abrir el proyecto en IntelliJ IDEA no aparece el triángulo verde para ejecutar:
+
+1. Haz clic derecho en el `pom.xml` → **Maven → Sync project**
+2. Espera a que IntelliJ descargue todas las dependencias y reindexe el proyecto
 
 ---
 
@@ -24,32 +40,9 @@ Backend REST API del proyecto AgroTrack, desarrollado con Spring Boot. Provee lo
 Una vez corriendo, abrir en el navegador:
 
 ```
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/api/v1/swagger-ui/index.html
 ```
 
 Ahí puedes ver y probar todos los endpoints disponibles.
 
 ---
-
-## Estructura del proyecto
-
-```
-org.example.agrotrack
-├── shared/                        → Clases compartidas (NO modificar)
-│   ├── aggregates/                → Base para aggregate roots de dominio
-│   ├── result/                    → ApplicationError y Result<T,E>
-│   ├── infrastructure/
-│   │   ├── persistence/           → Base para entidades JPA (UUID id)
-│   │   ├── documentation/         → Configuración de Swagger/OpenAPI
-│   │   └── i18n/                  → Soporte de idiomas (EN/ES)
-│   └── interfaces/
-│       ├── resources/             → ErrorResource, MessageResource
-│       └── transform/             → ErrorResponseAssembler, ResponseEntityAssembler
-│
-├── identity/                      → BC: Usuarios, planes, autenticación
-├── farming/                       → BC: Parcelas y cultivos
-├── soilmonitoring/                → BC: Registros de suelo y riego
-├── alerts/                        → BC: Alertas climáticas
-├── dashboard/                     → BC: Dashboard pro | empresarial
-└── support/                       → BC: Tickets de soporte
-```
