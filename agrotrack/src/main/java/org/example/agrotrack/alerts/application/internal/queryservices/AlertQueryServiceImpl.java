@@ -10,30 +10,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Query service responsible for retrieving weather alerts for a specific city.
- * Validates the query data and delegates alert retrieval to the weather service port.
- */
 @Service
 public class AlertQueryServiceImpl implements AlertQueryService {
 
     private final WeatherServicePort weatherServicePort;
 
-    /**
-     * Creates a new query service instance.
-     *
-     * @param weatherServicePort port used to retrieve weather alerts
-     */
     public AlertQueryServiceImpl(WeatherServicePort weatherServicePort) {
         this.weatherServicePort = weatherServicePort;
     }
 
-    /**
-     * Handles the request for retrieving weather alerts by city.
-     *
-     * @param query query containing the city name
-     * @return a result containing the list of alerts or a validation error
-     */
     @Override
     public Result<List<Alert>, ApplicationError> handle(GetAlertsByCityQuery query) {
         if (query.city() == null || query.city().isBlank()) {
