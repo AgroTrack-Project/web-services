@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 public record UpdateUserResource(
         @NotBlank String name,
         @NotBlank @Email String email,
-        @NotBlank String password,
+        String password,
         @NotBlank @JsonProperty("plan_type") String planType,
         @JsonProperty("company_name") String companyName
 ) {}
