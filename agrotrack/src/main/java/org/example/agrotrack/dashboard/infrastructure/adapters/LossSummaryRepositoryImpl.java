@@ -29,4 +29,10 @@ public class LossSummaryRepositoryImpl implements LossSummaryRepository {
                 .map(LossSummaryPersistenceAssembler::toDomainFromPersistence)
                 .toList();
     }
+
+    @Override
+    public LossSummary save(LossSummary summary) {
+        var entity = LossSummaryPersistenceAssembler.toPersistenceFromDomain(summary);
+        return LossSummaryPersistenceAssembler.toDomainFromPersistence(persistenceRepository.save(entity));
+    }
 }

@@ -20,9 +20,6 @@ public class FarmingPlotOwnershipAdapter implements PlotOwnershipQueryPort {
         this.plotRepository = plotRepository;
     }
 
-    // In the MockAPI adapter all three methods route through loadActivePlots(), which
-    // excludes plots whose status == "DELETED". Farming uses hard delete, so any plot
-    // that still exists in the DB is by definition not deleted — no status filter needed.
 
     @Override
     public List<String> findActivePlotIdsByUserId(String userId) {

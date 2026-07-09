@@ -29,4 +29,10 @@ public class YieldSummaryRepositoryImpl implements YieldSummaryRepository {
                 .map(YieldSummaryPersistenceAssembler::toDomainFromPersistence)
                 .toList();
     }
+
+    @Override
+    public YieldSummary save(YieldSummary summary) {
+        var entity = YieldSummaryPersistenceAssembler.toPersistenceFromDomain(summary);
+        return YieldSummaryPersistenceAssembler.toDomainFromPersistence(persistenceRepository.save(entity));
+    }
 }

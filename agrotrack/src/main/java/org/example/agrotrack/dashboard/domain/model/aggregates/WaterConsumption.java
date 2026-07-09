@@ -30,6 +30,14 @@ public class WaterConsumption extends AbstractDomainAggregateRoot<WaterConsumpti
         this.calculatedAt = calculatedAt;
     }
 
+    public static WaterConsumption create(
+            PlotId plotId,
+            TotalLiters totalLiters,
+            Season season
+    ) {
+        return new WaterConsumption(null, plotId, totalLiters, season, Instant.now());
+    }
+
     public static WaterConsumption restore(
             String id,
             PlotId plotId,

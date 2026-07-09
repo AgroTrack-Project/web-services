@@ -10,4 +10,6 @@ public interface LossSummaryRepository {
     Optional<LossSummary> findById(String id);
 
     List<LossSummary> findAll();
+
+    LossSummary save(LossSummary summary);
 }

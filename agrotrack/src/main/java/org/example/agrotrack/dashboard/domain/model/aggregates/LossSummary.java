@@ -34,6 +34,15 @@ public class LossSummary extends AbstractDomainAggregateRoot<LossSummary> {
         this.calculatedAt = calculatedAt;
     }
 
+    public static LossSummary create(
+            PlotId plotId,
+            LossPercentage lossPercentage,
+            LossCause cause,
+            Season season
+    ) {
+        return new LossSummary(null, plotId, lossPercentage, cause, season, Instant.now());
+    }
+
     public static LossSummary restore(
             String id,
             PlotId plotId,

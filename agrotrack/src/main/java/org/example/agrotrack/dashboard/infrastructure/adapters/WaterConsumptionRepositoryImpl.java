@@ -29,4 +29,10 @@ public class WaterConsumptionRepositoryImpl implements WaterConsumptionRepositor
                 .map(WaterConsumptionPersistenceAssembler::toDomainFromPersistence)
                 .toList();
     }
+
+    @Override
+    public WaterConsumption save(WaterConsumption consumption) {
+        var entity = WaterConsumptionPersistenceAssembler.toPersistenceFromDomain(consumption);
+        return WaterConsumptionPersistenceAssembler.toDomainFromPersistence(persistenceRepository.save(entity));
+    }
 }
