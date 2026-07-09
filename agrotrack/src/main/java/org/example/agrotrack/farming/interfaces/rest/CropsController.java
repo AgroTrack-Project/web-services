@@ -6,9 +6,11 @@ import org.example.agrotrack.farming.application.commandservices.CropCommandServ
 import org.example.agrotrack.farming.application.queryservices.CropQueryService;
 import org.example.agrotrack.farming.domain.model.commands.DeleteCropCommand;
 import org.example.agrotrack.farming.interfaces.rest.resource.CreateCropResource;
+import org.example.agrotrack.farming.interfaces.rest.resource.HarvestCropResource;
 import org.example.agrotrack.farming.interfaces.rest.resource.UpdateCropResource;
 import org.example.agrotrack.farming.interfaces.rest.transform.CreateCropCommandFromResourceAssembler;
 import org.example.agrotrack.farming.interfaces.rest.transform.CropResourceAssembler;
+import org.example.agrotrack.farming.interfaces.rest.transform.HarvestCropCommandFromResourceAssembler;
 import org.example.agrotrack.farming.interfaces.rest.transform.ListCropsQueryFromRequestAssembler;
 import org.example.agrotrack.farming.interfaces.rest.transform.UpdateCropCommandFromResourceAssembler;
 import org.example.agrotrack.shared.interfaces.transform.ResponseEntityAssembler;
@@ -56,6 +58,15 @@ public class CropsController {
     public ResponseEntity<?> update(@PathVariable String id, @Valid @RequestBody UpdateCropResource resource) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
                 cropCommandService.handle(UpdateCropCommandFromResourceAssembler.toCommandFromResource(id, resource)),
+                CropResourceAssembler::toResource,
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/{id}/harvest")
+    public ResponseEntity<?> harvest(@PathVariable String id, @Valid @RequestBody HarvestCropResource resource) {
+        return ResponseEntityAssembler.toResponseEntityFromResult(
+                cropCommandService.handle(HarvestCropCommandFromResourceAssembler.toCommandFromResource(id, resource)),
                 CropResourceAssembler::toResource,
                 HttpStatus.OK
         );

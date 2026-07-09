@@ -52,6 +52,14 @@ public class Crop extends AbstractDomainAggregateRoot<Crop> {
         this.harvestDate = harvestDate;
     }
 
+    public void harvest(LocalDate harvestDate) {
+        if (this.status == CropStatus.HARVESTED) {
+            throw new IllegalStateException("crop.error.already-harvested");
+        }
+        this.harvestDate = Objects.requireNonNull(harvestDate, "harvestDate must not be null");
+        this.status = CropStatus.HARVESTED;
+    }
+
     public String getId() {
         return id;
     }
