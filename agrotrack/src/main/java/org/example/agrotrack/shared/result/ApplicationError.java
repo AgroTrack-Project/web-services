@@ -17,6 +17,13 @@ public record ApplicationError(
                 null);
     }
 
+    public static ApplicationError invalidCredentials() {
+        return new ApplicationError(
+                "INVALID_CREDENTIALS",
+                "Invalid email or password",
+                null);
+    }
+
     public static ApplicationError validationError(String fieldOrConcept, String reason) {
         return new ApplicationError(
                 "VALIDATION_ERROR",
