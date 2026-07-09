@@ -27,8 +27,8 @@ public class UserPersistenceEntity extends AuditableAbstractPersistenceEntity {
     @Column(nullable = false, unique = true, length = 200)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "iam_user_id", nullable = false, unique = true, length = 36)
+    private String iamUserId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false, length = 30)

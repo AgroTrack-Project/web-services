@@ -3,8 +3,10 @@ package org.example.agrotrack.identity.interfaces.rest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.agrotrack.iam.interfaces.acl.IamContextFacade;
 import org.example.agrotrack.identity.application.commandservices.UserCommandService;
 import org.example.agrotrack.identity.application.queryservices.UserQueryService;
+import org.example.agrotrack.identity.domain.model.queries.GetUserByIamUserIdQuery;
 import org.example.agrotrack.identity.domain.model.queries.GetUserByIdQuery;
 import org.example.agrotrack.identity.interfaces.rest.resource.CreateUserResource;
 import org.example.agrotrack.identity.interfaces.rest.resource.UpdateUserResource;
@@ -15,6 +17,7 @@ import org.example.agrotrack.shared.interfaces.transform.ResponseEntityAssembler
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,11 +34,27 @@ public class UsersController {
 
     private final UserCommandService userCommandService;
     private final UserQueryService userQueryService;
+    private final IamContextFacade iamContextFacade;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable String id) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
                 userQueryService.handle(new GetUserByIdQuery(id)),
+                UserResourceAssembler::toResource,
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/by-iam-user/{iamUserId}")
+    public ResponseEntity<?> getByIamUserId(@PathVariable String iamUserId) {
+        var callerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        var callerIamUserId = iamContextFacade.findIdByEmail(callerEmail);
+        if (callerIamUserId.isEmpty() || !callerIamUserId.get().equals(iamUserId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntityAssembler.toResponseEntityFromResult(
+                userQueryService.handle(new GetUserByIamUserIdQuery(iamUserId)),
                 UserResourceAssembler::toResource,
                 HttpStatus.OK
         );

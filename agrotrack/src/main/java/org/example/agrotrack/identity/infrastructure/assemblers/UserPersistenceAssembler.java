@@ -12,7 +12,7 @@ public final class UserPersistenceAssembler {
                 entity.getId(),
                 entity.getName(),
                 entity.getEmail(),
-                entity.getPassword(),
+                entity.getIamUserId(),
                 entity.getUserType(),
                 entity.getPlanType(),
                 entity.getCompanyName(),
@@ -25,7 +25,7 @@ public final class UserPersistenceAssembler {
         UserPersistenceEntity entity = new UserPersistenceEntity();
         entity.setName(user.getName());
         entity.setEmail(user.getEmail());
-        entity.setPassword(user.getPassword());
+        entity.setIamUserId(user.getIamUserId());
         entity.setUserType(user.getUserType());
         entity.setPlanType(user.getPlanType());
         entity.setCompanyName(user.getCompanyName());
@@ -37,7 +37,6 @@ public final class UserPersistenceAssembler {
     public static void updatePersistenceFromDomain(UserPersistenceEntity entity, User user) {
         entity.setName(user.getName());
         entity.setEmail(user.getEmail());
-        entity.setPassword(user.getPassword());
         entity.setPlanType(user.getPlanType());
         entity.setCompanyName(user.getCompanyName());
         entity.setUpdatedAt(user.getUpdatedAt());

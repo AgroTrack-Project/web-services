@@ -30,6 +30,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByIamUserId(String iamUserId) {
+        return persistenceRepository.findByIamUserId(iamUserId).map(UserPersistenceAssembler::toDomainFromPersistence);
+    }
+
+    @Override
     public List<User> findAll() {
         return persistenceRepository.findAll().stream()
                 .map(UserPersistenceAssembler::toDomainFromPersistence)
