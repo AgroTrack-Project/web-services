@@ -11,6 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Default implementation of {@link PlotQueryService}. Read-only by design ({@code
+ * @Transactional(readOnly = true)}), enabling JPA/Hibernate read optimizations.
+ */
 @Service
 public class PlotQueryServiceImpl implements PlotQueryService {
 
@@ -25,6 +29,8 @@ public class PlotQueryServiceImpl implements PlotQueryService {
     public Result<List<Plot>, ApplicationError> handle(ListPlotsQuery query) {
         String userId = query.userId();
 
+        // Blank userId is treated the same as absent, unlike CropQueryServiceImpl's plotId
+        // filter, since userId typically arrives from a request parameter that may be empty.
         if (userId != null && !userId.isBlank()) {
             return Result.success(repository.findByUserId(userId.trim()));
         }
