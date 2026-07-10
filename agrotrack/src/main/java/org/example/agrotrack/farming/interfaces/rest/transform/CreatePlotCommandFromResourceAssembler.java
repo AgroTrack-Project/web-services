@@ -3,6 +3,9 @@ package org.example.agrotrack.farming.interfaces.rest.transform;
 import org.example.agrotrack.farming.domain.model.commands.CreatePlotCommand;
 import org.example.agrotrack.farming.interfaces.rest.resource.CreatePlotResource;
 
+/**
+ * Maps an incoming {@code CreatePlotResource} to the domain-level {@code CreatePlotCommand}.
+ */
 public final class CreatePlotCommandFromResourceAssembler {
 
     private CreatePlotCommandFromResourceAssembler() {
