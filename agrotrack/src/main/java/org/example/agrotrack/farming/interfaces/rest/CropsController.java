@@ -26,6 +26,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST entry point for the {@code Crop} aggregate. There is no {@code GET /crops/{id}} endpoint —
+ * only the list and mutation endpoints below are exposed, since the frontend never fetches a
+ * single crop by id directly. Harvesting is a dedicated {@code PUT /crops/{id}/harvest} endpoint
+ * rather than folded into the general update, since it carries different domain semantics
+ * (a one-way status transition, see {@code Crop.harvest()}).
+ */
 @RestController
 @RequestMapping("/crops")
 @RequiredArgsConstructor
@@ -34,6 +41,9 @@ public class CropsController {
     private final CropQueryService cropQueryService;
     private final CropCommandService cropCommandService;
 
+    /**
+     * Lists crops, optionally filtered by {@code plotId} query parameter.
+     */
     @GetMapping
     public ResponseEntity<?> list(@RequestParam(required = false) String plotId) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
@@ -72,6 +82,10 @@ public class CropsController {
         );
     }
 
+    /**
+     * Hard-deletes a crop. The success message from the command is discarded since a
+     * {@code 204 No Content} response carries no body.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         return ResponseEntityAssembler.toResponseEntityFromResult(

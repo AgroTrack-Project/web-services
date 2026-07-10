@@ -7,6 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Request body for {@code POST /plots}. Fields use snake_case JSON keys to match the frontend's
+ * naming convention.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record CreatePlotResource(
         @NotBlank @JsonProperty("user_id") String userId,

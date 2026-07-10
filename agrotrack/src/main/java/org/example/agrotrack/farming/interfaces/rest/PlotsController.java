@@ -24,6 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST entry point for the {@code Plot} aggregate. There is no {@code GET /plots/{id}} endpoint —
+ * only the list and mutation endpoints below are exposed, since the frontend never fetches a
+ * single plot by id directly.
+ */
 @RestController
 @RequestMapping("/plots")
 @RequiredArgsConstructor
@@ -32,6 +37,9 @@ public class PlotsController {
     private final PlotQueryService plotQueryService;
     private final PlotCommandService plotCommandService;
 
+    /**
+     * Lists plots, optionally filtered by {@code userId} query parameter.
+     */
     @GetMapping
     public ResponseEntity<?> list(@RequestParam(required = false) String userId) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
@@ -61,6 +69,10 @@ public class PlotsController {
         );
     }
 
+    /**
+     * Hard-deletes a plot. The success message from the command is discarded since a
+     * {@code 204 No Content} response carries no body.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         return ResponseEntityAssembler.toResponseEntityFromResult(
