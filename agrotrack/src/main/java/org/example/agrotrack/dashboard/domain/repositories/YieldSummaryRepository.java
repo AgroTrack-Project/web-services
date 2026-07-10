@@ -10,4 +10,6 @@ public interface YieldSummaryRepository {
     Optional<YieldSummary> findById(String id);
 
     List<YieldSummary> findAll();
+
+    YieldSummary save(YieldSummary summary);
 }

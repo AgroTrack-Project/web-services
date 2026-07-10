@@ -11,6 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Default implementation of {@link CropQueryService}. Read-only by design ({@code
+ * @Transactional(readOnly = true)}), enabling JPA/Hibernate read optimizations.
+ */
 @Service
 public class CropQueryServiceImpl implements CropQueryService {
 
@@ -25,6 +29,8 @@ public class CropQueryServiceImpl implements CropQueryService {
     public Result<List<Crop>, ApplicationError> handle(ListCropsQuery query) {
         String plotId = query.plotId();
 
+        // Unlike PlotQueryServiceImpl's userId filter, plotId is not blank-checked here — an
+        // empty string would be passed through to findByPlotId and simply match no rows.
         if (plotId != null) {
             return Result.success(repository.findByPlotId(plotId));
         }

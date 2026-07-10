@@ -11,6 +11,10 @@ import org.example.agrotrack.shared.result.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Default implementation of {@link PlotCommandService}. Plain CRUD over {@link PlotRepository};
+ * unlike crops, plot writes have no cross-context side effects.
+ */
 @Service
 public class PlotCommandServiceImpl implements PlotCommandService {
 

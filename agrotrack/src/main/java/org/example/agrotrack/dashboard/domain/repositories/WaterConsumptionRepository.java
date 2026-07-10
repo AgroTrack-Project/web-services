@@ -10,4 +10,6 @@ public interface WaterConsumptionRepository {
     Optional<WaterConsumption> findById(String id);
 
     List<WaterConsumption> findAll();
+
+    WaterConsumption save(WaterConsumption consumption);
 }

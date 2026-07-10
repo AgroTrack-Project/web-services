@@ -8,7 +8,7 @@ public record UserResource(
         String id,
         String name,
         String email,
-        String password,
+        @JsonProperty("iam_user_id") String iamUserId,
         @JsonProperty("user_type") String userType,
         @JsonProperty("plan_type") String planType,
         @JsonProperty("company_name") String companyName,

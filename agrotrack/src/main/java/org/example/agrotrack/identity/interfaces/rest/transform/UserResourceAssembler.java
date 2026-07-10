@@ -12,7 +12,7 @@ public final class UserResourceAssembler {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getPassword(),
+                user.getIamUserId(),
                 user.getUserType().name().toLowerCase(),
                 user.getPlanType().name(),
                 user.getCompanyName(),

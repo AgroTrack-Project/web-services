@@ -1,5 +1,6 @@
 package org.example.agrotrack.identity.application.internal.commandservices;
 
+import org.example.agrotrack.iam.interfaces.acl.IamContextFacade;
 import org.example.agrotrack.identity.application.commandservices.UserCommandService;
 import org.example.agrotrack.identity.domain.model.aggregates.AlertPreference;
 import org.example.agrotrack.identity.domain.model.aggregates.User;
@@ -19,11 +20,14 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
     private final AlertPreferenceRepository alertPreferenceRepository;
+    private final IamContextFacade iamContextFacade;
 
     public UserCommandServiceImpl(UserRepository userRepository,
-                                  AlertPreferenceRepository alertPreferenceRepository) {
+                                  AlertPreferenceRepository alertPreferenceRepository,
+                                  IamContextFacade iamContextFacade) {
         this.userRepository = userRepository;
         this.alertPreferenceRepository = alertPreferenceRepository;
+        this.iamContextFacade = iamContextFacade;
     }
 
     @Override
@@ -34,16 +38,22 @@ public class UserCommandServiceImpl implements UserCommandService {
                 return Result.failure(ApplicationError.conflict("User", "email already in use: " + command.email()));
             }
 
-            UserType userType;
-            PlanType planType;
-            try {
-                userType = UserType.valueOf(command.userType().toUpperCase());
-                planType = PlanType.valueOf(command.planType().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return Result.failure(ApplicationError.validationError("userType/planType", e.getMessage()));
+            if (!iamContextFacade.existsById(command.iamUserId())) {
+                return Result.failure(ApplicationError.notFound("IamUser", command.iamUserId()));
+            }
+            if (userRepository.findByIamUserId(command.iamUserId()).isPresent()) {
+                return Result.failure(ApplicationError.conflict("User", "profile already exists for this account"));
             }
 
-            User user = User.create(command.name(), command.email(), command.password(),
+            PlanType planType;
+            try {
+                planType = PlanType.valueOf(command.planType().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return Result.failure(ApplicationError.validationError("planType", e.getMessage()));
+            }
+            UserType userType = userTypeFor(planType);
+
+            User user = User.create(command.name(), command.email(), command.iamUserId(),
                     userType, planType, command.companyName());
             User saved = userRepository.save(user);
 
@@ -73,10 +83,22 @@ public class UserCommandServiceImpl implements UserCommandService {
             }
 
             User user = userOpt.get();
-            user.update(command.name(), command.email(), command.password(), planType, command.companyName());
+            boolean credentialsUpdated = iamContextFacade.updateCredentials(user.getIamUserId(), command.email(), command.password());
+            if (!credentialsUpdated) {
+                return Result.failure(ApplicationError.conflict("User", "email already registered for authentication: " + command.email()));
+            }
+
+            user.update(command.name(), command.email(), planType, command.companyName());
             return Result.success(userRepository.save(user));
         } catch (IllegalArgumentException e) {
             return Result.failure(ApplicationError.validationError("User", e.getMessage()));
         }
+    }
+
+    private static UserType userTypeFor(PlanType planType) {
+        return switch (planType) {
+            case BASIC, PRO -> UserType.FARMER;
+            case ENTERPRISE -> UserType.AGRICULTURAL_MANAGER;
+        };
     }
 }

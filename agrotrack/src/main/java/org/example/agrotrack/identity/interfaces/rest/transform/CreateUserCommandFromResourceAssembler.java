@@ -11,8 +11,7 @@ public final class CreateUserCommandFromResourceAssembler {
         return new CreateUserCommand(
                 resource.name(),
                 resource.email(),
-                resource.password(),
-                resource.userType(),
+                resource.iamUserId(),
                 resource.planType(),
                 resource.companyName()
         );

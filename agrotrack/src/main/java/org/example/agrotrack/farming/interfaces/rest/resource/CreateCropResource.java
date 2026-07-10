@@ -8,6 +8,10 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
+/**
+ * Request body for {@code POST /crops}. Fields use snake_case JSON keys to match the frontend's
+ * naming convention; {@code harvest_date} is optional (a planned date, not an actual harvest).
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record CreateCropResource(
         @NotBlank @JsonProperty("plot_id") String plotId,

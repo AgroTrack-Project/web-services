@@ -30,6 +30,14 @@ public class YieldSummary extends AbstractDomainAggregateRoot<YieldSummary> {
         this.calculatedAt = calculatedAt;
     }
 
+    public static YieldSummary create(
+            PlotId plotId,
+            YieldPerHectare yieldPerHectare,
+            Season season
+    ) {
+        return new YieldSummary(null, plotId, yieldPerHectare, season, Instant.now());
+    }
+
     public static YieldSummary restore(
             String id,
             PlotId plotId,

@@ -10,6 +10,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Adapter implementing the {@link PlotRepository} domain port on top of Spring Data JPA,
+ * translating between {@code Plot} aggregates and {@code PlotPersistenceEntity} rows via
+ * {@link PlotPersistenceAssembler}.
+ */
 @Repository
 public class PlotRepositoryImpl implements PlotRepository {
 
@@ -43,6 +48,10 @@ public class PlotRepositoryImpl implements PlotRepository {
     public Plot save(Plot plot) {
         PlotPersistenceEntity entity;
 
+        // A null id means this is a new plot, so a fresh entity is built. Otherwise the existing
+        // row is loaded first and updated in place via copyToPersistenceFromDomain, rather than
+        // building a brand-new entity, so JPA/Hibernate treats this as an update rather than an
+        // insert-after-delete and preserves the inherited auditing metadata.
         if (plot.getId() == null) {
             entity = PlotPersistenceAssembler.toPersistenceFromDomain(plot);
         } else {

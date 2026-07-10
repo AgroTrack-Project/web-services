@@ -3,6 +3,10 @@ package org.example.agrotrack.farming.interfaces.rest.transform;
 import org.example.agrotrack.farming.domain.model.commands.UpdateCropCommand;
 import org.example.agrotrack.farming.interfaces.rest.resource.UpdateCropResource;
 
+/**
+ * Maps an incoming {@code UpdateCropResource} to the domain-level {@code UpdateCropCommand}.
+ * The crop id comes from the path variable rather than the request body.
+ */
 public final class UpdateCropCommandFromResourceAssembler {
 
     private UpdateCropCommandFromResourceAssembler() {

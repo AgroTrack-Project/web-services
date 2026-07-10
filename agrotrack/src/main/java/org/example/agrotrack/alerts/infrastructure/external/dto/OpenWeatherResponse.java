@@ -5,11 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-/**
- * Represents the response returned by the OpenWeather API.
- * Contains weather conditions, temperature data, humidity,
- * and the city name.
- */
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record OpenWeatherResponse(
         List<WeatherCondition> weather,
@@ -17,21 +13,11 @@ public record OpenWeatherResponse(
         String name
 ) {
 
-    /**
-     * Represents a weather condition entry provided by the API.
-     *
-     * @param description textual description of the weather condition
-     */
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record WeatherCondition(String description) {}
 
-    /**
-     * Represents the main weather measurements returned by the API.
-     *
-     * @param temp current temperature
-     * @param tempMin minimum temperature
-     * @param humidity current humidity percentage
-     */
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record MainData(
             double temp,
