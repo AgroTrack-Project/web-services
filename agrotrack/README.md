@@ -24,8 +24,6 @@ Este repositorio contiene el Web Service de AgroTrack, un RESTful API desarrolla
 - **Docker** — contenerización del servicio para su despliegue.
 - **Render** — plataforma de hosting del backend en producción.
 
-<!-- PENDIENTE: completar/ajustar bounded contexts según la estructura real de paquetes -->
-
 ---
 
 ## Instalación y ejecución local
