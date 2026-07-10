@@ -13,6 +13,13 @@ import org.example.agrotrack.shared.infrastructure.persistence.jpa.entities.Audi
 
 import java.time.LocalDateTime;
 
+/**
+ * JPA mapping for the {@code plots} table. Deliberately kept separate from the {@code Plot}
+ * domain aggregate (no business methods, no invariants) so persistence concerns don't leak
+ * into the domain model; conversion between the two happens in {@code PlotPersistenceAssembler}.
+ * {@code createdAt} is tracked as its own column (rather than relying solely on the inherited
+ * auditing fields) since it is exposed directly on the domain aggregate and API resource.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
