@@ -7,6 +7,11 @@ import org.example.agrotrack.shared.result.Result;
 
 import java.util.List;
 
+/**
+ * Application-layer port for plot reads. Kept separate from {@link
+ * org.example.agrotrack.farming.application.commandservices.PlotCommandService} to follow
+ * the project's CQRS split between reads and writes.
+ */
 public interface PlotQueryService {
 
     Result<List<Plot>, ApplicationError> handle(ListPlotsQuery query);

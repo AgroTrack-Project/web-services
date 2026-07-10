@@ -16,6 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Default implementation of {@link CropCommandService}. Beyond persisting crops, harvesting
+ * a crop also triggers dashboard metrics generation via {@link HarvestMetricsGenerator} as a
+ * side effect of the write.
+ */
 @Service
 public class CropCommandServiceImpl implements CropCommandService {
 
@@ -38,6 +43,8 @@ public class CropCommandServiceImpl implements CropCommandService {
     @Override
     @Transactional
     public Result<Crop, ApplicationError> handle(CreateCropCommand command) {
+        // Crops don't have a foreign-key constraint enforced by the domain layer, so the
+        // referenced plot's existence is validated explicitly here before creating the crop.
         if (plotRepository.findById(command.plotId()).isEmpty()) {
             return Result.failure(ApplicationError.validationError("plot_id", "Plot does not exist"));
         }
@@ -80,6 +87,9 @@ public class CropCommandServiceImpl implements CropCommandService {
 
         Crop harvestedCrop = repository.save(crop);
 
+        // Metrics generation reaches into the soilmonitoring and dashboard bounded contexts and
+        // is treated as best-effort: a failure there must not roll back or fail the harvest
+        // itself, so it's caught and logged rather than propagated.
         try {
             harvestMetricsGenerator.generateForHarvest(
                     harvestedCrop.getPlotId(),

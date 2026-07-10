@@ -7,6 +7,11 @@ import org.example.agrotrack.farming.domain.model.commands.UpdatePlotCommand;
 import org.example.agrotrack.shared.result.ApplicationError;
 import org.example.agrotrack.shared.result.Result;
 
+/**
+ * Application-layer port for plot write operations. Each overload handles one command type
+ * and returns a {@link Result} instead of throwing, so controllers can map failures to HTTP
+ * responses uniformly via {@code ResponseEntityAssembler}.
+ */
 public interface PlotCommandService {
 
     Result<Plot, ApplicationError> handle(CreatePlotCommand command);

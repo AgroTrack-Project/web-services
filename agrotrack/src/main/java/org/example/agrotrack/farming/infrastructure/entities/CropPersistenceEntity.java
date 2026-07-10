@@ -13,6 +13,12 @@ import org.example.agrotrack.shared.infrastructure.persistence.jpa.entities.Audi
 
 import java.time.LocalDate;
 
+/**
+ * JPA mapping for the {@code crops} table. Deliberately kept separate from the {@code Crop}
+ * domain aggregate (no business methods, no invariants) so persistence concerns don't leak
+ * into the domain model; conversion between the two happens in {@code CropPersistenceAssembler}.
+ * The id column and auditing fields are inherited from {@link AuditableAbstractPersistenceEntity}.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
