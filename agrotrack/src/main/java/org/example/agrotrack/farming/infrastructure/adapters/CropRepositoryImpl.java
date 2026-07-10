@@ -10,6 +10,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Adapter implementing the {@link CropRepository} domain port on top of Spring Data JPA,
+ * translating between {@code Crop} aggregates and {@code CropPersistenceEntity} rows via
+ * {@link CropPersistenceAssembler}.
+ */
 @Repository
 public class CropRepositoryImpl implements CropRepository {
 
@@ -43,6 +48,10 @@ public class CropRepositoryImpl implements CropRepository {
     public Crop save(Crop crop) {
         CropPersistenceEntity entity;
 
+        // A null id means this is a new crop, so a fresh entity is built. Otherwise the existing
+        // row is loaded first and updated in place via copyToPersistenceFromDomain, rather than
+        // building a brand-new entity, so JPA/Hibernate treats this as an update rather than an
+        // insert-after-delete and preserves the inherited auditing metadata.
         if (crop.getId() == null) {
             entity = CropPersistenceAssembler.toPersistenceFromDomain(crop);
         } else {
