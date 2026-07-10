@@ -85,3 +85,5 @@ Este repositorio sigue las siguientes convenciones para mantener consistencia en
 - GitFlow como workflow de branching (`main`, `develop`, `feature/*`, `release/*`, `hotfix/*`).
 - Conventional Commits para los mensajes de commit (`feat:`, `fix:`, `chore:`, etc.).
 - Semantic Versioning para el nombrado de releases.
+ 
+---
