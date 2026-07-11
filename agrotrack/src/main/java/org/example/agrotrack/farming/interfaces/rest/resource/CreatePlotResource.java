@@ -1,0 +1,21 @@
+package org.example.agrotrack.farming.interfaces.rest.resource;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
+/**
+ * Request body for {@code POST /plots}. Fields use snake_case JSON keys to match the frontend's
+ * naming convention.
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record CreatePlotResource(
+        @NotBlank @JsonProperty("user_id") String userId,
+        @NotBlank @Size(max = 100) String name,
+        @NotBlank String location,
+        @NotNull @Positive @JsonProperty("size_hectares") Double sizeHectares
+) {
+}
